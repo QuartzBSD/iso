@@ -40,6 +40,9 @@ if [ ! -f "$WORKDIR/boot/cdboot" ]; then
     exit 1
 fi
 
+# Create quartz.txz ( for the installer )
+tar -cJpf ./$WORKDIR/quartzos-dist/quartz.txz -C "$WORKDIR" .
+
 # Build ISO
 # makefs -t ffs -B little -o label=QUARTZOS rootfs.img "$WORKDIR"
 # mkisofs -o "$ISO_NAME" -b boot/cdboot -no-emul-boot -r -J "$WORKDIR"

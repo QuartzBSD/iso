@@ -29,6 +29,7 @@ tar -xpf kernel.txz -C "$WORKDIR"
 
 # Clone overlay repository
 git clone https://github.com/QuartzBSD/rootfs.git "$OVERLAY"
+rm -f "$OVERLAY/LICENSE" "$OVERLAY/README.md"
 
 # Copy overlays ( QuartzOS Files )
 cp -a "$OVERLAY/." "$WORKDIR"

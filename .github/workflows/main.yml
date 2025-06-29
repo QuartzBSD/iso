@@ -7,8 +7,7 @@ on:
     
 jobs:
     build:
-        runs-on: ubuntu-latest
-        environment: secrets 
+        runs-on: ubuntu-latestuplo
         container:
             image: archlinux:latest
             options: --privileged
@@ -60,7 +59,7 @@ jobs:
                   xorriso -as mkisofs -o "$ISO_NAME".iso -V "QUARTZOS" -b "boot/cdboot" -no-emul-boot -boot-load-size 4 -boot-info-table -r -J "$WORKDIR"/
 
             - name: Upload ISO artifact
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4.6.2
               with:
                 name: ${{ env.ISO_NAME }}-iso
                 path: ${{ env.ISO_NAME }}.iso

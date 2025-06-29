@@ -7,7 +7,7 @@ on:
     
 jobs:
     build:
-        runs-on: ubuntu-latestuplo
+        runs-on: ubuntu-latest
         container:
             image: archlinux:latest
             options: --privileged
@@ -24,8 +24,6 @@ jobs:
             
             - name: Install tools
               run: |
-                  rm /etc/pacman.conf
-                  cp pacman.conf /etc/pacman.conf
                   pacman --noconfirm -Syyu
                   pacman --noconfirm -S git xorriso
 

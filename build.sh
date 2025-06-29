@@ -24,8 +24,8 @@ fi
 
 
 # Extract FreeBSD FIles
-tar -xpf base.txz -C "$WORKDIR"
-tar -xpf kernel.txz -C "$WORKDIR"
+tar -xpvf base.txz -C "$WORKDIR"
+tar -xpvf kernel.txz -C "$WORKDIR"
 
 # Clone overlay repository
 git clone https://github.com/QuartzBSD/rootfs.git "$OVERLAY"
@@ -41,7 +41,7 @@ if [ ! -f "$WORKDIR/boot/cdboot" ]; then
 fi
 
 # Create quartz.txz ( for the installer )
-tar -cJpf ./$WORKDIR/quartzos-dist/quartz.txz -C "$WORKDIR" .
+tar -cJpvf ./$WORKDIR/quartzos-dist/quartz.txz -C "$WORKDIR" .
 
 # Build ISO
 # makefs -t ffs -B little -o label=QUARTZOS rootfs.img "$WORKDIR"

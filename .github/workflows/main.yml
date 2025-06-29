@@ -1,0 +1,67 @@
+name: Build an ISO
+
+on:
+    push:
+        branches: [ "main" ]
+    workflow_dispatch:
+    
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        environment: secrets 
+        container:
+            image: archlinux:latest
+            options: --privileged
+        env:
+            ISO_NAME: "QuartzOS"
+            WORKDIR: "./work"
+            OVERLAY: "./overlayfs"
+        steps:
+            - uses: actions/checkout@v2
+            - name: Prepare arch keyring
+              run: |
+                  pacman-key --init
+                  pacman --noconfirm -Sy archlinux-keyring
+            
+            - name: Install tools
+              run: |
+                  rm /etc/pacman.conf
+                  cp pacman.conf /etc/pacman.conf
+                  pacman --noconfirm -Syyu
+                  pacman --noconfirm -S git xorriso
+
+            - name: Clone QuartzOS Filesystem
+              run: |
+                  git clone https://github.com/QuartzBSD/rootfs.git "$OVERLAY"
+                  rm -f "$OVERLAY/LICENSE" "$OVERLAY/README.md"
+
+            - name: Fetch FreeBSD Files
+              run: |
+                  curl -O https://download.freebsd.org/releases/amd64/14.3-RELEASE/base.txz
+                  curl -O https://download.freebsd.org/releases/amd64/14.3-RELEASE/kernel.txz
+
+            - name: Extract FreeBSD Files
+              run: |
+                  mkdir -p "$WORKDIR"
+                  tar -xpvf base.txz -C "$WORKDIR" --same-owner
+                  tar -xpvf kernel.txz -C "$WORKDIR" --same-owner
+
+            - name: Copy QuartzOS Filesystem into FreeBSD
+              run: |
+                  cp -a "$OVERLAY/." "$WORKDIR"
+                  
+            - name: Build ISO
+              run: |
+                  if [ ! -f "$WORKDIR/boot/cdboot" ]; then
+                      echo "'$WORKDIR/boot/cdboot/' is missing. Make sure cdboot is present in your base or added manually vro."
+                      exit 1
+                  fi
+                  echo Building "$ISO_NAME.iso"
+                  xorriso -as mkisofs -o "$ISO_NAME".iso -V "QUARTZOS" -b "boot/cdboot" -no-emul-boot -boot-load-size 4 -boot-info-table -r -J "$WORKDIR"/
+
+            - name: Upload ISO artifact
+              uses: actions/upload-artifact@v3
+              with:
+                name: ${{ env.ISO_NAME }}-iso
+                path: ${{ env.ISO_NAME }}.iso
+                  

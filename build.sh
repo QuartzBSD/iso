@@ -1,5 +1,11 @@
 #!/bin/sh
 # This script will build QuartzOS (untested)
+
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Please run this script as root." >&2
+  exit 1
+fi
+
 set -e
 
 ISO_NAME="QuartzOS"
@@ -24,8 +30,8 @@ fi
 
 
 # Extract FreeBSD FIles
-tar -xpvf base.txz -C "$WORKDIR"
-tar -xpvf kernel.txz -C "$WORKDIR"
+tar -xpvf base.txz -C "$WORKDIR" --same-owner
+tar -xpvf kernel.txz -C "$WORKDIR" --same-owner
 
 # Clone overlay repository
 git clone https://github.com/QuartzBSD/rootfs.git "$OVERLAY"

@@ -52,7 +52,13 @@ tar -cJpvf ./$WORKDIR/quartzos-dist/quartz.txz -C "$WORKDIR" .
 # Build ISO
 # makefs -t ffs -B little -o label=QUARTZOS rootfs.img "$WORKDIR"
 # mkisofs -o "$ISO_NAME" -b boot/cdboot -no-emul-boot -r -J "$WORKDIR"
-xorriso -as mkisofs -o "$ISO_NAME".iso -V "QUARTZOS" -b "boot/cdboot" -no-emul-boot -boot-load-size 4 -boot-info-table -r -J "$WORKDIR"/
+# xorriso -as mkisofs -o "$ISO_NAME".iso -V "QUARTZOS" -b "boot/cdboot" -no-emul-boot -boot-load-size 4 -boot-info-table -r -J "$WORKDIR"/
+xorriso -as mkisofs -o "$ISO_NAME".iso \
+  -V "QUARTZOS" \
+  -allow-lowercase -r -J \
+  -b boot/cdboot \
+  -no-emul-boot -boot-load-size 4 -boot-info-table \
+  "$WORKDIR"
 
 echo "ISO created: $ISO_NAME"
 

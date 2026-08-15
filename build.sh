@@ -47,7 +47,10 @@ if [ ! -f "$WORKDIR/boot/cdboot" ]; then
 fi
 
 # Create quartz.txz ( for the installer )
-tar -cJpvf ./$WORKDIR/quartzos-dist/quartz.txz -C "$WORKDIR" .
+# tar -cJpvf ./$WORKDIR/quartzos-dist/quartz.txz -C "$WORKDIR" .
+
+# fstab
+echo "/dev/iso9660/QUARTZOS / cd9660 ro 0 0" > $WORKDIR/etc/fstab
 
 # Build ISO
 # makefs -t ffs -B little -o label=QUARTZOS rootfs.img "$WORKDIR"

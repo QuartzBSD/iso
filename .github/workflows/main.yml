@@ -43,7 +43,7 @@ jobs:
                   tar -xpvf base.txz -C "$WORKDIR" --same-owner
                   tar -xpvf kernel.txz -C "$WORKDIR" --same-owner
 
-            - name: Copy QuartzOS Filesystem into FreeBSD
+            - name: Overlay QuartzOS Filesystem over FreeBSD
               run: |
                   cp -a "$OVERLAY/." "$WORKDIR"
                   
@@ -53,12 +53,18 @@ jobs:
                       echo "'$WORKDIR/boot/cdboot/' is missing. Make sure cdboot is present in your base or added manually vro."
                       exit 1
                   fi
+
+                  echo "/dev/iso9660/QUARTZOS / cd9660 ro 0 0" > $WORKDIR/etc/fstab
+                  
                   echo Building "$ISO_NAME.iso"
-                  xorriso -as mkisofs -o "$ISO_NAME".iso \
-                    -V "QUARTZOS" \
-                    -allow-lowercase -r -J \
+
+                  xorriso -as mkisofs \
+                    -o "$ISO_NAME".iso \
+                    -V QUARTZOS \
+                    -allow-lowercase \
+                    -r \
                     -b boot/cdboot \
-                    -no-emul-boot -boot-load-size 4 -boot-info-table \
+                    -no-emul-boot \
                     "$WORKDIR"
 
             - name: Upload ISO artifact

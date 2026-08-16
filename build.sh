@@ -1,5 +1,5 @@
 #!/bin/sh
-# This script will build QuartzOS (untested)
+# This script will build QuartzOS
 
 if [ "$(id -u)" -ne 0 ]; then
   echo "Please run this script as root." >&2
@@ -53,10 +53,6 @@ fi
 echo "/dev/iso9660/QUARTZOS / cd9660 ro 0 0" > $WORKDIR/etc/fstab
 
 # Build ISO
-# makefs -t ffs -B little -o label=QUARTZOS rootfs.img "$WORKDIR"
-# mkisofs -o "$ISO_NAME" -b boot/cdboot -no-emul-boot -r -J "$WORKDIR"
-# xorriso -as mkisofs -o "$ISO_NAME".iso -V "QUARTZOS" -b "boot/cdboot" -no-emul-boot -boot-load-size 4 -boot-info-table -r -J "$WORKDIR"/
-
 xorriso -as mkisofs \
   -o "$ISO_NAME".iso \
   -V QUARTZOS \
@@ -67,5 +63,3 @@ xorriso -as mkisofs \
   "$WORKDIR"
 
 echo "ISO created: $ISO_NAME"
-
-# i have no idea if this even works
